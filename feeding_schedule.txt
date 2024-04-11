@@ -1,0 +1,69 @@
+Feeding Schedule:
+
+Monday:
+00:00 AM - Lions
+00:30 AM - Elephants
+01:00 AM - Rhinoceros
+01:30 AM - Wolves
+02:00 AM - Lemurs
+02:30 AM - Otters
+03:00 AM - Sloths
+03:30 AM - Panthers
+04:00 AM - Penguins
+04:30 AM - Giraffes
+05:00 AM - Tigers
+05:30 AM - Gorillas
+06:00 AM - Bears
+06:30 AM - Hippos
+07:00 AM - Monkeys
+07:30 AM - Dolphins
+08:00 AM - Koalas
+08:30 AM - Kangaroos
+09:00 AM - Crocodiles
+09:30 AM - Parrots
+10:00 AM - Snakes
+10:30 AM - Turtles
+11:00 AM - Flamingos
+11:30 AM - Seals
+12:00 PM - Lions
+12:30 PM - Elephants
+01:00 PM - Rhinoceros
+01:30 PM - Wolves
+02:00 PM - Lemurs
+02:30 PM - Otters
+03:00 PM - Sloths
+03:30 PM - Panthers
+04:00 PM - Penguins
+04:30 PM - Giraffes
+05:00 PM - Tigers
+05:30 PM - Gorillas
+06:00 PM - Bears
+06:30 PM - Hippos
+07:00 PM - Monkeys
+07:30 PM - Dolphins
+08:00 PM - Koalas
+08:30 PM - Kangaroos
+09:00 PM - Crocodiles
+09:30 PM - Parrots
+10:00 PM - Snakes
+10:30 PM - Turtles
+11:00 PM - Flamingos
+11:30 PM - Seals
+
+Tuesday:
+(Same as Monday)
+
+Wednesday:
+(Same as Monday)
+
+Thursday:
+(Same as Monday)
+
+Friday:
+(Same as Monday)
+
+Saturday:
+(Same as Monday)
+
+Sunday:
+(Same as Monday)
