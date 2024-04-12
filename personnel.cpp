@@ -56,7 +56,7 @@ int Guide::guideCount = 0;
 
 
 // Объявление функций
-void mainMenu();
+void personnelMenu();
 void personnelSubMenu();
 void viewAdminPanel();
 void excursionBreakdown();
@@ -92,11 +92,12 @@ int getCurrentPersonID();
 void displayFAQ();
 
 int main() {
-    mainMenu();
+    //Запуск меню (Персонал, экскурсии)
+    personnelMenu();
     return 0;
 }
 
-void mainMenu() {
+void personnelMenu() {
     char choice;
 
     do {
@@ -104,7 +105,8 @@ void mainMenu() {
         std::cout << "1. Personnel (Персонал)" << std::endl;
         std::cout << "2. Excursion Tours (Экскурсионные туры)" << std::endl;
         std::cout << "3. FAQ (Часто задаваемые вопросы)" << std::endl;
-        std::cout << "4. Exit (Выход)" << std::endl;
+        std::cout << "8. Admin panel (Панель администратора)" << std::endl;
+        std::cout << "0. Exit (Выход)" << std::endl;
         std::cout << "Enter your choice: ";
         std::cin >> choice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -119,14 +121,17 @@ void mainMenu() {
             case '3':
                 displayFAQ();
                 break;
-            case '4':
+            case '8':
+                viewAdminPanel();
+                break;
+            case '0':
                 std::cout << "Exiting program. (Выход из программы)" << std::endl;
                 break;
             default:
                 std::cout << "Invalid choice. Please enter again. (Неверный выбор. Пожалуйста, введите снова.)" << std::endl;
                 break;
         }
-    } while (choice != '4');
+    } while (choice != '0');
 }
 
 void personnelSubMenu() {
@@ -140,8 +145,9 @@ void personnelSubMenu() {
         std::cout << "4. Display personnel by category (Показать персонал по категориям)" << std::endl;
         std::cout << "5. Search personnel by name (Поиск персонала по имени)" << std::endl;
         std::cout << "6. View work schedule (Посмотреть график работы)" << std::endl;
-        std::cout << "7. Admin panel (Панель администратора)" << std::endl;
-        std::cout << "8. Return to main menu (Вернуться в главное меню)" << std::endl;
+        std::cout << "8. Admin panel (Панель администратора)" << std::endl;
+        std::cout << "9. Return to main menu (Вернуться в главное меню)" << std::endl;
+        std::cout << "0. Exit (Выход)" << std::endl;
         std::cout << "Enter your choice: ";
         std::cin >> choice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -165,17 +171,20 @@ void personnelSubMenu() {
             case '6':
                 viewWorkSchedule();
                 break;
-            case '7':
+            case '8':
                 viewAdminPanel();
                 break;
-            case '8':
+            case '9':
                 std::cout << "Returning to main menu. (Возвращение в главное меню)" << std::endl;
+                break;
+            case '0':
+                std::cout << "Exiting program. (Выход из программы)" << std::endl;
                 break;
             default:
                 std::cout << "Invalid choice. Please enter again. (Неверный выбор. Пожалуйста, введите снова.)" << std::endl;
                 break;
         }
-    } while (choice != '8');
+    } while (choice != '0');
 }
 
 void viewAdminPanel() {
@@ -183,7 +192,11 @@ void viewAdminPanel() {
     std::cout << "1. Excursion breakdown (Разрез экскурсий)" << std::endl;
     std::cout << "2. Total revenue (Общий доход)" << std::endl;
     std::cout << "3. Number of visitors per day (Количество посетителей за день)" << std::endl;
-    std::cout << "4. Back to main menu (Выход в главное меню)" << std::endl;
+    std::cout << "9. Return to main menu (Вернуться в главное меню)" << std::endl;
+    std::cout << "0. Exit (Выход)" << std::endl;
+    std::cout << "Enter your choice: ";
+    std::cin >> choice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     int adminChoice;
     std::cout << "Enter your choice: ";
@@ -199,13 +212,19 @@ void viewAdminPanel() {
         case 3:
             visitorsPerDay();
             break;
-        case 4:
-            return;
-        default:
-            std::cout << "Invalid choice. Please enter again." << std::endl;
+        case '9':
+            std::cout << "Returning to main menu. (Возвращение в главное меню)" << std::endl;
             break;
-    }
+        case '0':
+            std::cout << "Exiting program. (Выход из программы)" << std::endl;
+            break;
+        default:
+            std::cout << "Invalid choice. Please enter again. (Неверный выбор. Пожалуйста, введите снова.)" << std::endl;
+            break;
+        }
+    } while (choice != '0');
 }
+
 
 void excursionBreakdown() {
     std::ifstream inFile("tickets.txt");
