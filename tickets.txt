@@ -1,0 +1,8 @@
+Tour: Audio guide, Total Amount: $152, Number of Visitors: 17
+Tour: Audio guide, Total Amount: $162, Number of Visitors: 25
+Tour: Extreme tour, Total Amount: $2025, Number of Visitors: 23
+Tour: Individual tour, Total Amount: $437, Number of Visitors: 15
+Tour: Extreme tour, Total Amount: $1087, Number of Visitors: 11
+Tour: Audio guide, Total Amount: $25, Number of Visitors: 5
+Tour: Group tour, Total Amount: $50, Number of Visitors: 5
+Tour: Individual tour, Total Amount: $412, Number of Visitors: 15

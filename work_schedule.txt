@@ -1,0 +1,43 @@
+Monday:
+Keepers:
+- Keeper 1: 00:00 - 08:00
+- Keeper 2: 08:00 - 16:00
+- Keeper 3: 16:00 - 24:00
+- Keeper 4: 00:00 - 08:00
+- Keeper 5: 08:00 - 16:00
+- Keeper 6: 16:00 - 24:00
+- Keeper 7: 00:00 - 08:00
+- Keeper 8: 08:00 - 16:00
+- Keeper 9: 16:00 - 24:00
+- Keeper 10: 00:00 - 08:00
+
+Veterinarians:
+- Veterinarian 1: 00:00 - 08:00
+- Veterinarian 2: 08:00 - 16:00
+- Veterinarian 3: 16:00 - 24:00
+
+Guides:
+- Guide 1: 09:00 - 15:00
+- Guide 2: 09:00 - 15:00
+- Guide 3: 09:00 - 15:00
+- Guide 4: 15:00 - 21:00
+- Guide 5: 15:00 - 21:00
+- Guide 6: 15:00 - 21:00
+
+Tuesday:
+(Same as Monday)
+
+Wednesday:
+(Same as Monday)
+
+Thursday:
+(Same as Monday)
+
+Friday:
+(Same as Monday)
+
+Saturday:
+(Same as Monday)
+
+Sunday:
+(Same as Monday)
