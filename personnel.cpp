@@ -7,46 +7,61 @@
 #include <cstdlib>
 #include <map>
 
-class Keeper {
+class Personnel {
+protected:
+    std::string name;
+    std::string dateOfBirth;
+
+public:
+    Personnel(const std::string& name, const std::string& dateOfBirth)
+        : name(name), dateOfBirth(dateOfBirth) {}
+
+    virtual void displayDetails() const = 0;
+};
+
+class Keeper : public Personnel {
 public:
     static const int MAX_KEEPERS = 10;
     static int keeperCount;
 
-    std::string name;
-    std::string dateOfBirth;
-
     Keeper(const std::string& name, const std::string& dateOfBirth)
-        : name(name), dateOfBirth(dateOfBirth) {
+        : Personnel(name, dateOfBirth) {
             keeperCount++;
+    }
+
+    void displayDetails() const override {
+        std::cout << "Name: " << name << ", Date of Birth: " << dateOfBirth << ", Job Title: Keeper" << std::endl;
     }
 };
 
-class Veterinarian {
+class Veterinarian : public Personnel {
 public:
     static const int MAX_VETERINARIANS = 3;
     static int veterinarianCount;
 
-    std::string name;
-    std::string dateOfBirth;
-
     Veterinarian(const std::string& name, const std::string& dateOfBirth)
-        : name(name), dateOfBirth(dateOfBirth) {
+        : Personnel(name, dateOfBirth) {
             veterinarianCount++;
+    }
+
+    void displayDetails() const override {
+        std::cout << "Name: " << name << ", Date of Birth: " << dateOfBirth << ", Job Title: Veterinarian" << std::endl;
     }
 };
 
-class Guide {
+class Guide : public Personnel {
 public:
     static const int MAX_GUIDES = 6;
     static int guideCount;
-
-    std::string name;
-    std::string dateOfBirth;
     std::string languages;
 
     Guide(const std::string& name, const std::string& dateOfBirth, const std::string& languages)
-        : name(name), dateOfBirth(dateOfBirth), languages(languages) {
+        : Personnel(name, dateOfBirth), languages(languages) {
             guideCount++;
+    }
+
+    void displayDetails() const override {
+        std::cout << "Name: " << name << ", Date of Birth: " << dateOfBirth << ", Job Title: Guide, Languages: " << languages << std::endl;
     }
 };
 
@@ -55,44 +70,82 @@ int Veterinarian::veterinarianCount = 0;
 int Guide::guideCount = 0;
 
 
-// Объявление функций
+// Отображение главного меню и обработка выбора пользователей
 void personnelMenu();
+
+// Подменю для действий с персоналом
 void personnelSubMenu();
+
+// Проверка учетных данных
+bool checkCredentials(const std::string& enteredLogin, const std::string& enteredPassword);
+
+// Отображение панели администратора
 void viewAdminPanel();
+
+// Функции связанные с экскурсиями и статистикой
 void excursionBreakdown();
 void totalRevenue();
 void visitorsPerDay();
 void displayExcursionTours();
-void writeTicketInfoToFile();
+void viewAvailablePrograms();
 void buyTickets();
+
+// Запись информации в файлы
+void writeTicketInfoToFile();
+void writeGuideInfoToFile(int guideID, const std::string& guideName, const std::string& tourName, int numVisitors, double totalAmount);
+
+// Управление персоналом
 void addPersonnel();
-int getKeeperCount();
-int getVeterinarianCount();
-int getGuideCount();
+void removePersonnel();
 void addKeeper(const std::string& name, const std::string& dateOfBirth);
 void addVeterinarian(const std::string& name, const std::string& dateOfBirth);
 void addGuide(const std::string& name, const std::string& dateOfBirth, const std::string& languages);
-void displayVacancies();
-void removePersonnel();
 void displayAllPersonnel();
 void displayPersonnelByCategory();
 void searchPersonnelByName();
+void displayVacancies();
+
+// Подменю для различных категорий персонала
 void keeperSubMenu();
 void veterinarianSubMenu();
-void viewAvailablePrograms();
 void guideSubMenu();
+
+// Работа с расписанием и сообщениями
 void addMessage();
 void viewWorkSchedule();
 void viewFeedingSchedule();
+
+// Работа со счетчиками
 int readCounter(const std::string& counterName);
 void writeCounter(const std::string& counterName, int counterValue);
-int generateId();
+int getKeeperCount();
+int getVeterinarianCount();
+int getGuideCount();
+
+// Проверка лимита персонала по категории
 bool checkPersonnelLimit(const std::string& category);
+
+// Генерация идентификаторов
+int generateId();
+
+// Работа с ГИДом
+int getGuideIDFromFile(const std::string& guideName);
 int getCurrentPersonID();
+
+// Отображение часто задаваемых вопросов
 void displayFAQ();
 
+// Проверка ввода
+char getValidChoice();
+
+// Проверка ввода возраста
+bool isLeapYear(int year);
+bool isValidDate(int day, int month, int year);
+bool isValidAge(int day, int month, int year);
+bool isEligible(int day, int month, int year);
+
 int main() {
-    //Запуск меню (Персонал, экскурсии)
+    //Запуск меню (Персонал, экскурсии). Можно объединять 
     personnelMenu();
     return 0;
 }
@@ -108,8 +161,11 @@ void personnelMenu() {
         std::cout << "8. Admin panel (Панель администратора)" << std::endl;
         std::cout << "0. Exit (Выход)" << std::endl;
         std::cout << "Enter your choice: ";
-        std::cin >> choice;
+        choice = getValidChoice();
+
+        // Очищаем буфер ввода
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
 
         switch (choice) {
             case '1':
@@ -149,7 +205,7 @@ void personnelSubMenu() {
         std::cout << "9. Return to main menu (Вернуться в главное меню)" << std::endl;
         std::cout << "0. Exit (Выход)" << std::endl;
         std::cout << "Enter your choice: ";
-        std::cin >> choice;
+        choice = getValidChoice();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (choice) {
@@ -179,52 +235,98 @@ void personnelSubMenu() {
                 break;
             case '0':
                 std::cout << "Exiting program. (Выход из программы)" << std::endl;
+                return;
+            default:
+                std::cout << "Invalid choice. Please enter again. (Неверный выбор. Пожалуйста, введите снова.)" << std::endl;
+                break;
+        }
+    } while (choice != '0' && choice != '9');
+}
+
+bool checkCredentials(const std::string& enteredLogin, const std::string& enteredPassword) {
+    std::ifstream inFile("admin.txt");
+    if (!inFile) {
+        std::cerr << "Error: Unable to open admin.txt for reading!" << std::endl;
+        return false;
+    }
+
+    std::string login, password;
+    std::string line;
+    while (std::getline(inFile, line)) {
+        size_t colonPos = line.find(":");
+        if (colonPos != std::string::npos) {
+            std::string key = line.substr(0, colonPos);
+            std::string value = line.substr(colonPos + 1); // Оставляем пробел после двоеточия
+            // Удаление начальных и конечных пробелов из значения
+            value.erase(0, value.find_first_not_of(" "));
+            value.erase(value.find_last_not_of(" ") + 1);
+            if (key == "login") {
+                login = value;
+            } else if (key == "password") {
+                password = value;
+            }
+        }
+    }
+
+    inFile.close();
+    return (login == enteredLogin && password == enteredPassword);
+}
+
+void viewAdminPanel() {
+    std::string enteredLogin, enteredPassword;
+
+    std::cout << "Enter your login: ";
+    std::cin >> enteredLogin;
+    std::cout << "Enter your password: ";
+    std::cin >> enteredPassword;
+
+    if (checkCredentials(enteredLogin, enteredPassword)) {
+        std::cout << "Login successful! Access granted to admin panel." << std::endl;
+        // Нет необходимости вызывать viewAdminPanel() здесь
+    } else {
+        std::cout << "Login failed! Incorrect username or password." << std::endl;
+        return; // Выйдем из функции, чтобы не продолжать выполнение кода
+    }
+    
+    // Здесь можно продолжить выполнение других операций администратора
+    char choice;
+    int adminChoice;
+
+    do {
+        std::cout << "\nAdmin panel (Панель администратора)" << std::endl;
+        std::cout << "1. Excursion breakdown (Разрез экскурсий)" << std::endl;
+        std::cout << "2. Total revenue (Общий доход)" << std::endl;
+        std::cout << "3. Number of visitors per day (Количество посетителей за день)" << std::endl;
+        std::cout << "9. Return to main menu (Вернуться в главное меню)" << std::endl;
+        std::cout << "0. Exit (Выход)" << std::endl;
+        std::cout << "Enter your choice: ";
+        choice = getValidChoice();
+
+        // Очищаем буфер ввода
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        switch (choice) {
+            case '1':
+                excursionBreakdown();
+                break;
+            case '2':
+                totalRevenue();
+                break;
+            case '3':
+                visitorsPerDay();
+                break;
+            case '9':
+                std::cout << "Returning to main menu. (Возвращение в главное меню)" << std::endl;
+                break;
+            case '0':
+                std::cout << "Exiting program. (Выход из программы)" << std::endl;
                 break;
             default:
                 std::cout << "Invalid choice. Please enter again. (Неверный выбор. Пожалуйста, введите снова.)" << std::endl;
                 break;
         }
-    } while (choice != '0');
+    } while (choice != '0' && choice != '9');
 }
-
-void viewAdminPanel() {
-    std::cout << "\nAdmin panel (Панель администратора)" << std::endl;
-    std::cout << "1. Excursion breakdown (Разрез экскурсий)" << std::endl;
-    std::cout << "2. Total revenue (Общий доход)" << std::endl;
-    std::cout << "3. Number of visitors per day (Количество посетителей за день)" << std::endl;
-    std::cout << "9. Return to main menu (Вернуться в главное меню)" << std::endl;
-    std::cout << "0. Exit (Выход)" << std::endl;
-    std::cout << "Enter your choice: ";
-    std::cin >> choice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    int adminChoice;
-    std::cout << "Enter your choice: ";
-    std::cin >> adminChoice;
-
-    switch (adminChoice) {
-        case 1:
-            excursionBreakdown();
-            break;
-        case 2:
-            totalRevenue();
-            break;
-        case 3:
-            visitorsPerDay();
-            break;
-        case '9':
-            std::cout << "Returning to main menu. (Возвращение в главное меню)" << std::endl;
-            break;
-        case '0':
-            std::cout << "Exiting program. (Выход из программы)" << std::endl;
-            break;
-        default:
-            std::cout << "Invalid choice. Please enter again. (Неверный выбор. Пожалуйста, введите снова.)" << std::endl;
-            break;
-        }
-    } while (choice != '0');
-}
-
 
 void excursionBreakdown() {
     std::ifstream inFile("tickets.txt");
@@ -235,6 +337,8 @@ void excursionBreakdown() {
 
     // Используем карту для хранения информации о каждом типе экскурсии
     std::map<std::string, std::pair<int, int>> excursionInfo; // Пара: общая сумма, общее количество посетителей
+    int totalVisitors = 0;
+    int totalRevenue = 0;
 
     std::string line;
     while (std::getline(inFile, line)) {
@@ -255,6 +359,10 @@ void excursionBreakdown() {
         // Обновляем информацию о типе экскурсии в карте
         excursionInfo[excursionName].first += totalAmount;
         excursionInfo[excursionName].second += numVisitors;
+
+        // Обновляем общее количество посетителей и общий доход
+        totalVisitors += numVisitors;
+        totalRevenue += totalAmount;
     }
 
     inFile.close();
@@ -262,8 +370,12 @@ void excursionBreakdown() {
     // Выводим информацию о каждом типе экскурсии
     std::cout << "\nExcursion breakdown (Разрез экскурсий):" << std::endl;
     for (const auto& pair : excursionInfo) {
-        std::cout << "Excursion: " << pair.first << ", Visitors: " << pair.second.second << ", Total Amount: $" << pair.second.first << std::endl;
+        std::cout << "Excursion: " << pair.first << "\nVisitors: " << pair.second.second << "\nTotal Amount: $" << pair.second.first << "\n*************************************************" << std::endl;
     }
+
+    // Выводим общее количество посетителей и общий доход
+    std::cout << "\nTotal Visitors: " << totalVisitors << std::endl;
+    std::cout << "Total Revenue: $" << totalRevenue << std::endl;
 }
 
 void totalRevenue() {
@@ -326,10 +438,12 @@ void displayExcursionTours() {
     std::cout << "   - Booking is available between 9:00 and 20:00." << std::endl;
     std::cout << "4. Extreme tour - $150" << std::endl;
     std::cout << "   - The extreme tour has a duration of 2 hours and can be booked at any convenient time between 9:00 and 19:00." << std::endl;
+    std::cout << "5. Virtual tour - $10" << std::endl;
+    std::cout << "   - Virtual tours are available online." << std::endl;
     
     int tourChoice;
     std::cout << "Enter your choice: ";
-    std::cin >> tourChoice;
+    tourChoice = getValidChoice();
     buyTickets(tourChoice); // передаем выбор тура в функцию для покупки билетов
 }
 
@@ -345,19 +459,72 @@ void writeTicketInfoToFile(const std::string& tourName, int totalAmount, int num
 }
 
 // Функция для получения ФИО гида из файла personnel.txt
-std::string getGuideNameFromFile() {
+std::string getGuideNameFromFile(int guideID) {
     std::ifstream inFile("personnel.txt");
     std::string line;
     while (std::getline(inFile, line)) {
-        if (line.find("Job Title: Guide") != std::string::npos) {
-            // Найдена строка с должностью "Guide", извлекаем имя гида
-            size_t nameStart = line.find("Name: ") + 6; // Длина "Name: "
-            std::string guideName = line.substr(nameStart, line.find(",") - nameStart); // Получаем имя до первой запятой
-            return guideName;
+        std::istringstream iss(line);
+        std::string token;
+        int id;
+        std::string jobTitle, name;
+        while (iss >> token) {
+            if (token == "ID:") {
+                iss >> id;
+                if (id == guideID) {
+                    // Найден нужный ID, считываем Job Title
+                    while (iss >> token) {
+                        if (token == "Job" && (iss >> token) && token == "Title:") {
+                            // Найден Job Title, проверяем, является ли он "Guide"
+                            if ((iss >> token) && token == "Guide,") {
+                                // Найден гид, считываем его имя
+                                while (iss >> token) {
+                                    if (token == "Name:") {
+                                        std::getline(iss, name);
+                                        // Убираем пробелы в начале имени
+                                        name.erase(0, name.find_first_not_of(" \t\n\r\f\v"));
+                                        return name;
+                                    }
+                                }
+                            } else {
+                                // Найденный ID не соответствует гиду, выходим
+                                return "Unknown";
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     return "Unknown"; // Если гид не найден, возвращаем "Unknown"
 }
+
+void writeGuideInfoToFile(int guideID, const std::string& guideName, const std::string& tourName, int numVisitors, double earnings) {
+    std::ofstream file("guide.txt", std::ios::app);
+    if (file.is_open()) {
+        // Расчет прибыли гида (30% от суммы заказа)
+        double guideEarnings = earnings * 0.3;
+        file << "Guide ID: " << guideID << ", Guide Name: " << guideName << ", Tour: " << tourName << ", Number of Visitors: " << numVisitors << ", Earnings: $" << guideEarnings << std::endl;
+        file.close();
+    } else {
+        std::cerr << "Unable to open file!" << std::endl;
+    }
+}
+
+// Функция для получения ID гида из файла
+int getGuideIDFromFile(const std::string& guideName) {
+    std::ifstream inFile("personnel.txt");
+    std::string line;
+    while (std::getline(inFile, line)) {
+        if (line.find("Name: " + guideName) != std::string::npos) {
+            // Найдена строка с именем гида, извлекаем его ID
+            size_t idStart = line.find("ID: ") + 4; // Длина "ID: "
+            int guideID = std::stoi(line.substr(idStart));
+            return guideID;
+        }
+    }
+    return -1; // Если гид не найден, возвращаем -1
+}
+
 
 // Функция для обработки покупки билетов
 void buyTickets(int tourChoice) {
@@ -365,7 +532,6 @@ void buyTickets(int tourChoice) {
     std::string tourName;
     int numVisitors = 0;
 
-    // Определение цены и имени тура
     switch (tourChoice) {
         case 1:
             tourPrice = 10; 
@@ -383,47 +549,62 @@ void buyTickets(int tourChoice) {
             tourPrice = 150; 
             tourName = "Extreme tour";
             break;
+        case 5:
+            tourPrice = 10;
+            tourName = "Virtual tour";
+            break;
         default:
             std::cerr << "Invalid choice!" << std::endl;
             return;
     }
 
-    // Запрос количества посетителей для каждой категории
-    int numBabies, numChildren, numTeenagers, numAdults, numSeniors;
-    std::cout << "\nEnter the number of visitors for each category:" << std::endl;
-    std::cout << "Babies (0-3 years old): ";
-    std::cin >> numBabies;
-    numVisitors += numBabies;
+    if (tourChoice != 1 && tourChoice != 5) {
+        // Если выбран не аудио и не виртуальный тур, то запрашиваем количество посетителей
+        int numBabies, numChildren, numTeenagers, numAdults, numSeniors;
+        std::cout << "\nEnter the number of visitors for each category:" << std::endl;
+        std::cout << "Babies (0-3 years old): ";
+        std::cin >> numBabies;
+        numVisitors += numBabies;
 
-    std::cout << "Children (3-10 years old): ";
-    std::cin >> numChildren;
-    numVisitors += numChildren;
+        std::cout << "Children (3-10 years old): ";
+        std::cin >> numChildren;
+        numVisitors += numChildren;
 
-    std::cout << "Teenagers (10-18 years old): ";
-    std::cin >> numTeenagers;
-    numVisitors += numTeenagers;
+        std::cout << "Teenagers (10-18 years old): ";
+        std::cin >> numTeenagers;
+        numVisitors += numTeenagers;
 
-    std::cout << "Adults (18-65 years old): ";
-    std::cin >> numAdults;
-    numVisitors += numAdults;
+        std::cout << "Adults (18-65 years old): ";
+        std::cin >> numAdults;
+        numVisitors += numAdults;
 
-    std::cout << "Seniors (65+ years old): ";
-    std::cin >> numSeniors;
-    numVisitors += numSeniors;
+        std::cout << "Seniors (65+ years old): ";
+        std::cin >> numSeniors;
+        numVisitors += numSeniors;
 
-    /* Расчет суммы заказа в зависимости от выбранной экскурсии и возрастных категорий
-       Рассмотрим скидки для различных возрастных категорий
-       Babies: 100%, Children: 25%, Teenagers: 50%, Seniors: 75%*/
-    double totalAmount = (numBabies * 0 + numChildren * 0.75 + numTeenagers * 0.5 + numAdults + numSeniors * 0.25) * tourPrice;
+        // Рассчитываем сумму заказа в зависимости от выбранной экскурсии и возрастных категорий
+        double totalAmount = (numBabies * 0 + numChildren * 0.75 + numTeenagers * 0.5 + numAdults + numSeniors * 0.25) * tourPrice;
 
-    // Запись информации о проданных билетах в файл
-    writeTicketInfoToFile(tourName, totalAmount, numVisitors);
+        // Выбор случайного ID гида
+        int guideID = std::rand() % 1000; // Случайный ID гида
 
-    // Выбор случайного ФИО гида
-    std::string guideName = getGuideNameFromFile();
+        // Получаем имя гида по ID из файла
+        std::string guideName = getGuideNameFromFile(guideID);
 
-    // Вывод информации о скидках и общей сумме заказа
-    std::cout << "\nTOTAL AMOUNT: $" << totalAmount << ", Number of Visitors: " << numVisitors << ", Tour: " << tourName << ", Guide: " << guideName << std::endl;
+        // Запись информации о гиде и проданных билетах
+        writeGuideInfoToFile(guideID, guideName, tourName, numVisitors, totalAmount);
+        writeTicketInfoToFile(tourName, totalAmount, numVisitors);
+
+        // Вывод информации о скидках и общей сумме заказа
+        std::cout << "\nTOTAL AMOUNT: $" << totalAmount << ", Number of Visitors: " << numVisitors << ", Tour: " << tourName << ", Guide: " << guideName << std::endl;
+    } else {
+        // Если выбран аудио или виртуальный тур, устанавливаем одного посетителя и не назначаем гида
+        numVisitors = 1;
+        writeTicketInfoToFile(tourName, tourPrice, numVisitors);
+
+        // Вывод информации о скидках и общей сумме заказа
+        std::cout << "\nTOTAL AMOUNT: $" << tourPrice << ", Number of Visitors: " << numVisitors << ", Tour: " << tourName << std::endl;
+    }
 }
 
 void addPersonnel() {
@@ -435,7 +616,7 @@ char choice;
         std::cout << "2. Veterinarian" << std::endl;
         std::cout << "3. Guide" << std::endl;
         std::cout << "Enter your choice: ";
-        std::cin >> choice;
+        choice = getValidChoice();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         std::string name, dateOfBirth, languages;
@@ -516,64 +697,128 @@ int getGuideCount() {
     return count;
 }
 
-void addKeeper(const std::string& name, const std::string& dateOfBirth) {
-    // Получаем следующий доступный ID
-    int newId = generateId();
-    if (newId == -1) {
-        std::cerr << "Error: Unable to generate new person ID." << std::endl;
-        return;
+bool isLeapYear(int year) {
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+}
+
+bool isValidDate(int day, int month, int year) {
+    if (month < 1 || month > 12 || day < 1)
+        return false;
+
+    int daysInMonth = 31;
+    if (month == 4 || month == 6 || month == 9 || month == 11)
+        daysInMonth = 30;
+    else if (month == 2) {
+        daysInMonth = (isLeapYear(year)) ? 29 : 28;
     }
 
-    // Открываем файл для записи в конец
-    std::ofstream outFile("personnel.txt", std::ios_base::app);
-    if (outFile.is_open()) {
-        // Записываем данные о новом сотруднике в файл
-        outFile << "ID: " << newId << ", Job Title: Keeper, Name: " << name << ", Date of Birth: " << dateOfBirth << std::endl;
-        outFile.close();
-        std::cout << "Keeper added successfully. (Смотритель успешно добавлен)" << std::endl;
+    return day <= daysInMonth;
+}
+
+bool isValidAge(int day, int month, int year) {
+    time_t now = time(0);
+    tm* localtm = localtime(&now);
+    int currentYear = localtm->tm_year + 1900;
+    int currentMonth = localtm->tm_mon + 1;
+    int currentDay = localtm->tm_mday;
+
+    int age = currentYear - year;
+    if (currentMonth < month || (currentMonth == month && currentDay < day)) {
+        age--;
+    }
+
+    return (age == 18 && currentMonth == month && currentDay == (day + 1)) || (age <= 70 && age >= 18);
+}
+
+bool isEligible(int day, int month, int year) {
+    return isValidDate(day, month, year) && isValidAge(day, month, year);
+}
+
+void addKeeper(const std::string& name, const std::string& dateOfBirth) {
+    std::stringstream ss(dateOfBirth);
+    int day, month, year;
+    char delimiter;
+    ss >> day >> delimiter >> month >> delimiter >> year;
+
+    if (isEligible(day, month, year)) {
+        // Получаем следующий доступный ID
+        int newId = generateId();
+        if (newId == -1) {
+            std::cerr << "Error: Unable to generate new person ID." << std::endl;
+            return;
+        }
+
+        // Открываем файл для записи в конец
+        std::ofstream outFile("personnel.txt", std::ios_base::app);
+        if (outFile.is_open()) {
+            // Записываем данные о новом сотруднике в файл
+            outFile << "ID: " << newId << ", Job Title: Keeper, Name: " << name << ", Date of Birth: " << dateOfBirth << std::endl;
+            outFile.close();
+            std::cout << "Keeper added successfully." << std::endl;
+        } else {
+            std::cerr << "Error: Unable to open personnel.txt for writing!" << std::endl;
+        }
     } else {
-        std::cerr << "Error: Unable to open personnel.txt for writing!" << std::endl;
+        std::cout << "Sorry, the provided date of birth is not valid for employment." << std::endl;
     }
 }
 
 void addVeterinarian(const std::string& name, const std::string& dateOfBirth) {
-    // Получаем следующий доступный ID
-    int newId = generateId();
-    if (newId == -1) {
-        std::cerr << "Error: Unable to generate new person ID." << std::endl;
-        return;
-    }
+    std::stringstream ss(dateOfBirth);
+    int day, month, year;
+    char delimiter;
+    ss >> day >> delimiter >> month >> delimiter >> year;
 
-    // Открываем файл для записи в конец
-    std::ofstream outFile("personnel.txt", std::ios_base::app);
-    if (outFile.is_open()) {
-        // Записываем данные о новом сотруднике в файл
-        outFile << "ID: " << newId << ", Job Title: Veterinarian, Name: " << name << ", Date of Birth: " << dateOfBirth << std::endl;
-        outFile.close();
-        std::cout << "Veterinarian added successfully. (Ветеринар успешно добавлен)" << std::endl;
+    if (isEligible(day, month, year)) {
+        // Получаем следующий доступный ID
+        int newId = generateId();
+        if (newId == -1) {
+            std::cerr << "Error: Unable to generate new person ID." << std::endl;
+            return;
+        }
+
+        // Открываем файл для записи в конец
+        std::ofstream outFile("personnel.txt", std::ios_base::app);
+        if (outFile.is_open()) {
+            // Записываем данные о новом сотруднике в файл
+            outFile << "ID: " << newId << ", Job Title: Veterinarian, Name: " << name << ", Date of Birth: " << dateOfBirth << std::endl;
+            outFile.close();
+            std::cout << "Veterinarian added successfully." << std::endl;
+        } else {
+            std::cerr << "Error: Unable to open personnel.txt for writing!" << std::endl;
+        }
     } else {
-        std::cerr << "Error: Unable to open personnel.txt for writing!" << std::endl;
+        std::cout << "Sorry, the provided date of birth is not valid for employment." << std::endl;
     }
 }
 
 void addGuide(const std::string& name, const std::string& dateOfBirth, const std::string& languages) {
-    // Получаем следующий доступный ID
-    int newId = generateId();
-    if (newId == -1) {
-        std::cerr << "Error: Unable to generate new person ID." << std::endl;
-        return;
-    }
+    std::stringstream ss(dateOfBirth);
+    int day, month, year;
+    char delimiter;
+    ss >> day >> delimiter >> month >> delimiter >> year;
 
-    // Открываем файл для записи в конец
-    std::ofstream outFile("personnel.txt", std::ios_base::app);
-    if (outFile.is_open()) {
-        // Записываем данные о новом сотруднике в файл
-        outFile << "ID: " << newId << ", Job Title: Guide, Name: " << name << ", Date of Birth: " << dateOfBirth 
-                << ", Languages: " << languages << std::endl;
-        outFile.close();
-        std::cout << "Guide added successfully. (Гид успешно добавлен)" << std::endl;
+    if (isEligible(day, month, year)) {
+        // Получаем следующий доступный ID
+        int newId = generateId();
+        if (newId == -1) {
+            std::cerr << "Error: Unable to generate new person ID." << std::endl;
+            return;
+        }
+
+        // Открываем файл для записи в конец
+        std::ofstream outFile("personnel.txt", std::ios_base::app);
+        if (outFile.is_open()) {
+            // Записываем данные о новом сотруднике в файл
+            outFile << "ID: " << newId << ", Job Title: Guide, Name: " << name << ", Date of Birth: " << dateOfBirth 
+                    << ", Languages: " << languages << std::endl;
+            outFile.close();
+            std::cout << "Guide added successfully." << std::endl;
+        } else {
+            std::cerr << "Error: Unable to open personnel.txt for writing!" << std::endl;
+        }
     } else {
-        std::cerr << "Error: Unable to open personnel.txt for writing!" << std::endl;
+        std::cout << "Sorry, the provided date of birth is not valid for employment." << std::endl;
     }
 }
 
@@ -657,7 +902,7 @@ void keeperSubMenu() {
         std::cout << "3. Add message (Добавить сообщение)" << std::endl;
         std::cout << "4. Return to main menu (Вернуться в главное меню)" << std::endl;
         std::cout << "Enter your choice: ";
-        std::cin >> choice;
+        choice = getValidChoice();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (choice) {
@@ -690,7 +935,7 @@ void veterinarianSubMenu() {
         std::cout << "3. Add message" << std::endl;
         std::cout << "4. Return to main menu" << std::endl;
         std::cout << "Enter your choice: ";
-        std::cin >> choice;
+        choice = getValidChoice();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (choice) {
@@ -704,7 +949,7 @@ void veterinarianSubMenu() {
                 addMessage();
                 break;
             case '4':
-                std::cout << "Returning to main menu." << std::endl;
+                std::cout << "Returning to main menu. (Возвращение в главное меню)" << std::endl;
                 break;
             default:
                 std::cout << "Invalid choice. Please enter again." << std::endl;
@@ -731,7 +976,7 @@ void guideSubMenu() {
         std::cout << "3. Add message" << std::endl;
         std::cout << "4. Return to main menu" << std::endl;
         std::cout << "Enter your choice: ";
-        std::cin >> choice;
+        choice = getValidChoice();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (choice) {
@@ -745,7 +990,7 @@ void guideSubMenu() {
                 addMessage();
                 break;
             case '4':
-                std::cout << "Returning to main menu." << std::endl;
+                std::cout << "Returning to main menu. (Возвращение в главное меню)" << std::endl;
                 break;
             default:
                 std::cout << "Invalid choice. Please enter again." << std::endl;
@@ -830,7 +1075,7 @@ void displayPersonnelByCategory() {
     std::cout << "2. Veterinarians" << std::endl;
     std::cout << "3. Guides" << std::endl;
     std::cout << "Enter your choice: ";
-    std::cin >> categoryChoice;
+    categoryChoice = getValidChoice();
 
 switch (categoryChoice[0]) {
     case '1': {
@@ -1020,3 +1265,18 @@ void displayFAQ() {
 
     inFile.close();
 }
+
+
+// Проверки ввода
+char getValidChoice() {
+    char choice;
+    std::cin >> choice;
+    while (choice != '1' && choice != '2' && choice != '3' && choice != '4' && choice != '5' && choice != '6' && choice != '7' && choice != '8' && choice != '9' && choice != '0') {
+        std::cout << "Invalid choice. Please enter a valid option: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> choice;
+    }
+    return choice;
+}
+

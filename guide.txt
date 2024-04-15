@@ -1,0 +1,9 @@
+Guide ID: 807, Guide Name: fdfdgd, Date of Birth: 10.10.1999, Languages: Chineesr, Tour: Group tour, Number of Visitors: 15, Total Amount: $300, Guide's Earnings: $90
+Guide ID: 807, Guide Name: Unknown, Tour: Individual tour, Number of Visitors: 15, Earnings: $375
+Guide ID: 807, Guide Name: Unknown, Tour: Extreme tour, Number of Visitors: 12, Earnings: $1575
+Guide ID: 807, Guide Name: Unknown, Tour: Individual tour, Number of Visitors: 6, Earnings: $187.5
+Guide ID: 807, Guide Name: Unknown, Tour: Extreme tour, Number of Visitors: 4, Earnings: $525
+Guide ID: 807, Guide Name: Unknown, Tour: Individual tour, Number of Visitors: 1, Earnings: $50
+Guide ID: 807, Guide Name: Unknown, Tour: Individual tour, Number of Visitors: 10, Earnings: $250
+Guide ID: 807, Guide Name: Unknown, Tour: Individual tour, Number of Visitors: 15, Earnings: $112.5
+Guide ID: 807, Guide Name: Unknown, Tour: Extreme tour, Number of Visitors: 1, Earnings: $11.25
